@@ -2,6 +2,8 @@
 
 A fixed-price ride-hailing platform built for **Naboomspruit (Mookgophong)** — a hometown project for a place where Uber and Bolt do not operate.
 
+**Project page:** [jackychabalala.github.io/naboom-ride-connect](https://jackychabalala.github.io/naboom-ride-connect/)
+
 ## Why this exists
 
 In Naboomspruit / Mookgophong there is no Uber. People still need rides, so locals started organising their own lifts and charging **fixed prices** for common routes.
