@@ -1,0 +1,67 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Passenger {
+  id           String   @id @default(cuid())
+  name         String
+  phone        String   @unique
+  createdAt    DateTime @default(now())
+  rides        Ride[]
+  ratingsGiven Rating[] @relation("PassengerRatings")
+}
+
+model Driver {
+  id             String   @id @default(cuid())
+  name           String
+  phone          String   @unique
+  vehicleDesc    String
+  idDocName      String?
+  licenceDocName String?
+  status         String   @default("PENDING") // PENDING, APPROVED, REJECTED, SUSPENDED
+  available      Boolean  @default(false)
+  createdAt      DateTime @default(now())
+  rides          Ride[]
+  ratingsReceived Rating[] @relation("DriverRatings")
+}
+
+model Ride {
+  id              String           @id @default(cuid())
+  route           String // "TOWN_TOWNSHIP" or "WITHIN_TOWNSHIP"
+  price           Int // 60 or 30
+  pickupPoint     String
+  status          String           @default("REQUESTED") // REQUESTED, ACCEPTED, IN_PROGRESS, COMPLETED, CANCELLED
+  passengerId     String
+  passenger       Passenger        @relation(fields: [passengerId], references: [id])
+  driverId        String?
+  driver          Driver?          @relation(fields: [driverId], references: [id])
+  createdAt       DateTime         @default(now())
+  completedAt     DateTime?
+  rating          Rating?
+  emergencyEvents EmergencyEvent[]
+}
+
+model Rating {
+  id          String    @id @default(cuid())
+  rideId      String    @unique
+  ride        Ride      @relation(fields: [rideId], references: [id])
+  passengerId String
+  passenger   Passenger @relation("PassengerRatings", fields: [passengerId], references: [id])
+  driverId    String
+  driver      Driver    @relation("DriverRatings", fields: [driverId], references: [id])
+  stars       Int
+  comment     String?
+  createdAt   DateTime  @default(now())
+}
+
+model EmergencyEvent {
+  id        String   @id @default(cuid())
+  rideId    String
+  ride      Ride     @relation(fields: [rideId], references: [id])
+  createdAt DateTime @default(now())
+}
